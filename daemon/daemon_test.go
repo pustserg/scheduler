@@ -8,7 +8,7 @@ import (
 func TestStart(t *testing.T) {
 	fmt.Println("testing daemon.Start")
 	daemonInstance := Daemon{}
-	err := daemonInstance.Start()
+	err := daemonInstance.Start(2)
 	if err != nil {
 		t.Error("daemon start returns error")
 	}

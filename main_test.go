@@ -5,5 +5,9 @@ import (
 	"testing"
 )
 
-func testMain(t *testing.T) {
+func TestStartDaemon(t *testing.T) {
+	err := startDaemon(1)
+	if err != nil {
+		t.Error("It returns error")
+	}
 }

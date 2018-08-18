@@ -14,5 +14,9 @@ func HandleTasks(sleepInterval int64) {
 }
 
 func handle() {
-	fmt.Println("handle")
+	// fmt.Println("handle")
+	task := Task{Action: "action", Schedule: "*/2 * * * *"}
+	// currentTime := time.Now()
+	nextTime := task.NextExecutionTime()
+	fmt.Println("Next execution time for schedule", task.Schedule, "is a", nextTime)
 }

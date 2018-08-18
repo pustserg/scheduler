@@ -1,9 +1,11 @@
 package daemon
 
 import (
-	_ "errors"
+	// _ "errors"
 	"github.com/pustserg/scheduler/tasks"
 )
+
+const sleepInterval = 2
 
 // Daemon is a struct with daemon info
 type Daemon struct {
@@ -11,9 +13,11 @@ type Daemon struct {
 }
 
 // Start daemon
-func (d *Daemon) Start() error {
+func (d *Daemon) Start(workersCount int) error {
 	d.State = "started"
-	go tasks.HandleTasks(5)
+	for i := 0; i < workersCount; i++ {
+		go tasks.HandleTasks(sleepInterval)
+	}
 	return nil
 }
 
