@@ -1,28 +1,37 @@
 package daemon
 
 import (
-	// _ "errors"
 	"github.com/pustserg/scheduler/tasks"
+	"time"
 )
 
-const sleepInterval = 2
+// sleepInterval in seconds
+const sleepInterval = 20
 
 // Daemon is a struct with daemon info
 type Daemon struct {
-	State string
+	State       string
+	StopChannel chan bool
 }
 
 // Start daemon
-func (d *Daemon) Start(workersCount int) error {
+func (d *Daemon) Start(workersCount int) {
 	d.State = "started"
-	for i := 0; i < workersCount; i++ {
-		go tasks.HandleTasks(sleepInterval)
-	}
-	return nil
+	go startInfiniteHandler(workersCount)
 }
 
 // Stop daemon
-func (d *Daemon) Stop() error {
+func (d *Daemon) Stop() {
 	d.State = "stopped"
-	return nil
+}
+
+func startInfiniteHandler(workersCount int) {
+	for {
+		tasksToHandle := tasks.GetTasksForHandle()
+		for i := 0; i < workersCount; i++ {
+			workerTasks := tasksToHandle
+			go tasks.HandleTasks(workerTasks)
+		}
+		time.Sleep(time.Duration(sleepInterval) * time.Second)
+	}
 }

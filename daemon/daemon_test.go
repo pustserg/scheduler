@@ -8,10 +8,7 @@ import (
 func TestStart(t *testing.T) {
 	fmt.Println("testing daemon.Start")
 	daemonInstance := Daemon{}
-	err := daemonInstance.Start(2)
-	if err != nil {
-		t.Error("daemon start returns error")
-	}
+	daemonInstance.Start(1)
 
 	if daemonInstance.State != "started" {
 		t.Error("Expected daemon to be started")
@@ -20,10 +17,7 @@ func TestStart(t *testing.T) {
 
 func TestStop(t *testing.T) {
 	daemonInstance := Daemon{}
-	err := daemonInstance.Stop()
-	if err != nil {
-		t.Error("daemon stop returns error")
-	}
+	daemonInstance.Stop()
 
 	if daemonInstance.State != "stopped" {
 		t.Error("Expected daemon to be stopped")

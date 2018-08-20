@@ -12,7 +12,7 @@ type Task struct {
 }
 
 // NextExecutionTime returns time parsed from cron schedule
-func (task *Task) NextExecutionTime() time.Time {
+func (task Task) NextExecutionTime() time.Time {
 	time := cronexpr.MustParse(task.Schedule).Next(time.Now())
 	return time
 }
