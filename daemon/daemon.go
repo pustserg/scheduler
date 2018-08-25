@@ -1,8 +1,8 @@
 package daemon
 
 import (
-	"fmt"
 	"github.com/pustserg/scheduler/tasks"
+	"log"
 	"time"
 )
 
@@ -29,7 +29,7 @@ func (d *Daemon) Stop() {
 func startInfiniteHandler(workersCount int, repo *tasks.TaskRepository) {
 	for {
 		tasksToHandle := repo.GetTasksForHandle()
-		fmt.Println("In daemon got tasks to handle", len(tasksToHandle))
+		log.Println("In daemon got tasks to handle", len(tasksToHandle))
 		for _, task := range tasksToHandle {
 			go task.Process(*repo)
 		}

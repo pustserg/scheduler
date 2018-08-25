@@ -38,7 +38,7 @@ func (repo TaskRepository) UpdateTaskPerformAtTime(task *Task) error {
 }
 
 func initDb() (*storm.DB, error) {
-	db, err := storm.Open("tasks.db")
+	db, err := storm.Open("../tasks.db")
 	if err != nil {
 		return nil, err
 	}

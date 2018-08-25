@@ -1,9 +1,17 @@
 package tasks
 
 import (
-	"fmt"
 	"github.com/gorhill/cronexpr"
+	"log"
 	"time"
+)
+
+var (
+	// AvailableActions array with valid actions
+	AvailableActions = [...]string{
+		"send_telegram_message",
+		"send_rabbit_message",
+	}
 )
 
 // Task is a struct with action and schedule
@@ -26,13 +34,32 @@ func (task Task) NextExecutionTime() time.Time {
 	return time
 }
 
+// Process processes task
 func (task Task) Process(repo TaskRepository) {
 	now := time.Now()
 	if task.PerformAt.Before(now) {
+		log.Println("task perform is set to", task.PerformAt, "process task", task.ID)
 		err := repo.UpdateTaskPerformAtTime(&task)
 		if err != nil {
 			panic(err)
 		}
 	}
-	fmt.Println("task perform at", task.PerformAt)
+}
+
+// Validate task before save to db
+func (task Task) Validate() error {
+	if task.Action == "" {
+		return ErrTaskActionShouldBeSet
+	}
+	found := false
+	for _, action := range AvailableActions {
+		if action == task.Action {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return ErrTaskActionShouldBeInAvailableActions
+	}
+	return nil
 }
