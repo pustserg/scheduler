@@ -8,7 +8,7 @@ import (
 
 func TestStart(t *testing.T) {
 	fmt.Println("testing daemon.Start")
-	repo := tasks.NewRepository()
+	repo := tasks.NewRepository("test.db")
 	daemonInstance := Daemon{}
 	daemonInstance.Start(1, repo)
 

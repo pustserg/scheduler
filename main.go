@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/pustserg/scheduler/appconfig"
 	"github.com/pustserg/scheduler/daemon"
 	"github.com/pustserg/scheduler/tasks"
 	"log"
@@ -10,10 +11,12 @@ import (
 
 func main() {
 	daemonWorkers := flag.Int("daemon-workers", 1, "Integer count of daemon workers")
+	appenv := string(*flag.String("env", "dev", "App environment"))
 
 	flag.Parse()
-	log.Println("app started")
-	repo := tasks.NewRepository()
+	config := appconfig.LoadConfig(appenv)
+	log.Println("app started with app env", appenv)
+	repo := tasks.NewRepository(config.DbFile)
 	startDaemon(*daemonWorkers, repo)
 
 	var input string

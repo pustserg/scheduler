@@ -10,8 +10,8 @@ type TaskRepository struct {
 	db *storm.DB
 }
 
-func NewRepository() *TaskRepository {
-	db, err := initDb()
+func NewRepository(dbFileName string) *TaskRepository {
+	db, err := initDb(dbFileName)
 	if err != nil {
 		panic(err)
 	}
@@ -37,8 +37,8 @@ func (repo TaskRepository) UpdateTaskPerformAtTime(task *Task) error {
 	return err
 }
 
-func initDb() (*storm.DB, error) {
-	db, err := storm.Open("../tasks.db")
+func initDb(dbFileName string) (*storm.DB, error) {
+	db, err := storm.Open(dbFileName)
 	if err != nil {
 		return nil, err
 	}

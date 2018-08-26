@@ -7,6 +7,6 @@ import (
 )
 
 func TestStartDaemon(t *testing.T) {
-	repo := tasks.NewRepository()
+	repo := tasks.NewRepository("test.db")
 	startDaemon(1, repo)
 }
