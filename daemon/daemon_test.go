@@ -3,12 +3,14 @@ package daemon
 import (
 	"fmt"
 	"github.com/pustserg/scheduler/tasks"
+	"os"
 	"testing"
 )
 
 func TestStart(t *testing.T) {
 	fmt.Println("testing daemon.Start")
 	repo := tasks.NewRepository("test.db")
+	defer os.Remove("test.db")
 	daemonInstance := Daemon{}
 	daemonInstance.Start(1, repo)
 
