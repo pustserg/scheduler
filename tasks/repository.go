@@ -6,10 +6,12 @@ import (
 	"time"
 )
 
+// TaskRepository data source for tasks
 type TaskRepository struct {
 	db *storm.DB
 }
 
+// NewRepository returns pointer to TaskRepository
 func NewRepository(dbFileName string) *TaskRepository {
 	db, err := initDb(dbFileName)
 	if err != nil {
@@ -28,6 +30,24 @@ func (repo *TaskRepository) GetTasksForHandle() []Task {
 		panic(err)
 	}
 	return tasks
+}
+
+// GetAllTasks return all tasks from db
+func (repo *TaskRepository) GetAllTasks() ([]Task, error) {
+	var tasks []Task
+	err := repo.db.All(&tasks)
+	return tasks, err
+}
+
+// AddTask creates task in db, returns task and db error
+func (repo *TaskRepository) AddTask(params map[string]string) (Task, error) {
+	task := Task{Action: params["Action"], Schedule: params["Schedule"]}
+	err := task.Validate()
+	if err != nil {
+		return task, err
+	}
+	repo.db.Save(&task)
+	return task, nil
 }
 
 // UpdateTaskPerformAtTime should set performAt time if absent or future
