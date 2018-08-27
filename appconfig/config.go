@@ -12,7 +12,6 @@ type Config struct {
 //LoadConfig returns config
 func LoadConfig(env string) *Config {
 	config := Config{}
-	fileName := "config." + env + ".yml"
-	configor.Load(&config, fileName)
+	configor.New(&configor.Config{Environment: env}).Load(&config, "config.yml")
 	return &config
 }
