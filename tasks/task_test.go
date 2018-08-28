@@ -40,4 +40,14 @@ func TestValidate(t *testing.T) {
 	if err3 != nil {
 		t.Error("Valid task is not valid")
 	}
+
+	task4 := Task{Action: AvailableActions[0], Schedule: "malformed"}
+	err4 := task4.Validate()
+	if err4 == nil {
+		t.Error("Malformed schedule is valid")
+	}
+
+	if err4 != ErrMalformedSchedule {
+		t.Error("Incorrect Errr for malformed schedule")
+	}
 }

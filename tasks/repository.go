@@ -62,12 +62,13 @@ func initDb(dbFileName string) (*storm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	// addInitialTasks(db)
 	return db, err
 }
 
 func addInitialTasks(db *storm.DB) {
-	task1 := Task{Action: "action", Schedule: "*/2 * * * *"}
+	task1 := Task{Action: "action", Schedule: "*/1 * * * * * *"}
 	db.Save(&task1)
-	task2 := Task{Action: "action", Schedule: "*/1 * * * *"}
+	task2 := Task{Action: "action", Schedule: "*/2 * * * * * *"}
 	db.Save(&task2)
 }

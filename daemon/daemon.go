@@ -7,7 +7,7 @@ import (
 )
 
 // sleepInterval in seconds
-const sleepInterval = 5
+const sleepInterval = 1
 
 // Daemon is a struct with daemon info
 type Daemon struct {
