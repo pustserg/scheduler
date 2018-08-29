@@ -48,6 +48,18 @@ func (task Task) Process(repo TaskRepository) {
 
 // Validate task before save to db
 func (task Task) Validate() error {
+	actionErr := validateAction(task)
+	if actionErr != nil {
+		return actionErr
+	}
+	scheduleErr := validateSchedule(task)
+	if scheduleErr != nil {
+		return scheduleErr
+	}
+	return nil
+}
+
+func validateAction(task Task) error {
 	if task.Action == "" {
 		return ErrTaskActionShouldBeSet
 	}
@@ -60,6 +72,14 @@ func (task Task) Validate() error {
 	}
 	if !found {
 		return ErrTaskActionShouldBeInAvailableActions
+	}
+	return nil
+}
+
+func validateSchedule(task Task) error {
+	_, err := cronexpr.Parse(task.Schedule)
+	if err != nil {
+		return ErrMalformedSchedule
 	}
 	return nil
 }
