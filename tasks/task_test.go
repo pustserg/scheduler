@@ -17,37 +17,48 @@ func TestNextExecutionTime(t *testing.T) {
 
 func TestValidate(t *testing.T) {
 	schedule := "*/2 * * * * *"
-	task1 := Task{Action: "", Schedule: schedule}
-	err1 := task1.Validate()
-	if err1 == nil {
-		t.Error("Empty action is valid")
-	}
-	if err1 != ErrTaskActionShouldBeSet {
-		t.Error("Incorrect Error for empty acton")
+	cases := []struct {
+		task     Task
+		valid    bool
+		err      error
+		errorMsg string
+	}{
+		{
+			task:     Task{Action: "", Schedule: schedule},
+			valid:    false,
+			err:      ErrTaskActionShouldBeSet,
+			errorMsg: "Incorrect Error for empty action",
+		},
+		{
+			task:     Task{Action: "not in list", Schedule: schedule},
+			valid:    false,
+			err:      ErrTaskActionShouldBeInAvailableActions,
+			errorMsg: "Incorrect Error for not in list action",
+		},
+		{
+			task:     Task{Action: AvailableActions[0], Schedule: schedule},
+			valid:    true,
+			err:      nil,
+			errorMsg: "Valid task is not valid",
+		},
+		{
+			task:     Task{Action: AvailableActions[0], Schedule: "malformed"},
+			valid:    false,
+			err:      ErrMalformedSchedule,
+			errorMsg: "Incorrect Errr for malformed schedule",
+		},
 	}
 
-	task2 := Task{Action: "not in list", Schedule: schedule}
-	err2 := task2.Validate()
-	if err2 == nil {
-		t.Error("Not in list action is valid")
-	}
-	if err2 != ErrTaskActionShouldBeInAvailableActions {
-		t.Error("Incorrect Error for not in list action")
-	}
-
-	task3 := Task{Action: AvailableActions[0], Schedule: schedule}
-	err3 := task3.Validate()
-	if err3 != nil {
-		t.Error("Valid task is not valid")
-	}
-
-	task4 := Task{Action: AvailableActions[0], Schedule: "malformed"}
-	err4 := task4.Validate()
-	if err4 == nil {
-		t.Error("Malformed schedule is valid")
-	}
-
-	if err4 != ErrMalformedSchedule {
-		t.Error("Incorrect Errr for malformed schedule")
+	for _, testCase := range cases {
+		e := testCase.task.Validate()
+		if testCase.valid && e != nil {
+			t.Error("Valid task returns error")
+		}
+		if !testCase.valid && e == nil {
+			t.Error("Invalid task did not return error")
+		}
+		if e != testCase.err {
+			t.Error(testCase.errorMsg)
+		}
 	}
 }
