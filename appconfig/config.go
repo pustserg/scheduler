@@ -8,7 +8,9 @@ import (
 
 // Config fof app
 type Config struct {
-	DbFile string
+	DbFile         string
+	TelegramAPIKey string
+	TelegramChatID int64
 }
 
 var cfgInstance *Config
