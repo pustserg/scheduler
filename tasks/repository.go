@@ -66,9 +66,10 @@ func initDb(dbFileName string) (*storm.DB, error) {
 	return db, err
 }
 
-func addInitialTasks(db *storm.DB) {
-	task1 := Task{Action: "action", Schedule: "*/1 * * * * * *"}
-	db.Save(&task1)
-	task2 := Task{Action: "action", Schedule: "*/2 * * * * * *"}
-	db.Save(&task2)
+func addInitialTasks(repo TaskRepository) {
+	task := map[string]string{"Action": AvailableActions[0], "Schedule": "*/2 * * * *"}
+	_, err := repo.AddTask(task)
+	if err != nil {
+		panic(err)
+	}
 }
