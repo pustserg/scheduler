@@ -18,6 +18,7 @@ func NewRepository(dbFileName string) *TaskRepository {
 		panic(err)
 	}
 	repo := TaskRepository{db: db}
+	// addInitialTasks(repo)
 	return &repo
 }
 
@@ -41,11 +42,12 @@ func (repo *TaskRepository) GetAllTasks() ([]Task, error) {
 
 // AddTask creates task in db, returns task and db error
 func (repo *TaskRepository) AddTask(params map[string]string) (Task, error) {
-	task := Task{Action: params["Action"], Schedule: params["Schedule"]}
+	task := Task{Action: params["action"], Schedule: params["schedule"]}
 	err := task.Validate()
 	if err != nil {
 		return task, err
 	}
+	task.PerformAt = task.NextExecutionTime()
 	repo.db.Save(&task)
 	return task, nil
 }
@@ -62,7 +64,6 @@ func initDb(dbFileName string) (*storm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	// addInitialTasks(db)
 	return db, err
 }
 
