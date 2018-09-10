@@ -60,14 +60,14 @@ func (repo TaskRepository) UpdateTaskPerformAtTime(task *Task) error {
 }
 
 // GetTask returns task with given id
-func (repo TaskRepository) GetTask(id int) (*Task, error) {
+func (repo TaskRepository) GetTask(id int) (Task, error) {
 	var task Task
 	err := repo.db.One("ID", id, &task)
-	return &task, err
+	return task, err
 }
 
 // UpdateTask updates task with given params
-func (repo TaskRepository) UpdateTask(id int, params map[string]string) (*Task, error) {
+func (repo TaskRepository) UpdateTask(id int, params map[string]string) (Task, error) {
 	taskForUpdate := Task{ID: id}
 	present := false
 	_, present = params["schedule"]
@@ -81,19 +81,19 @@ func (repo TaskRepository) UpdateTask(id int, params map[string]string) (*Task, 
 	}
 	err := repo.db.Update(&taskForUpdate)
 	if err != nil {
-		return nil, err
+		return Task{}, err
 	}
 	task, err := repo.GetTask(id)
 	return task, err
 }
 
 //DeleteTask deletes task with given id
-func (repo TaskRepository) DeleteTask(id int) (*Task, error) {
+func (repo TaskRepository) DeleteTask(id int) (Task, error) {
 	task, err := repo.GetTask(id)
 	if err != nil {
-		return nil, err
+		return task, err
 	}
-	err = repo.db.DeleteStruct(task)
+	err = repo.db.DeleteStruct(&task)
 	return task, err
 }
 
