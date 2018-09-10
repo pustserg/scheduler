@@ -94,7 +94,7 @@ func TestGetTask(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if *gotTask != task {
+	if gotTask.ID != task.ID {
 		t.Error("Got wrong task")
 	}
 
