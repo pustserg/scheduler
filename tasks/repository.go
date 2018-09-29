@@ -42,7 +42,11 @@ func (repo *TaskRepository) GetAllTasks() ([]Task, error) {
 
 // AddTask creates task in db, returns task and db error
 func (repo *TaskRepository) AddTask(params map[string]string) (Task, error) {
-	task := Task{Action: params["action"], Schedule: params["schedule"]}
+	task := Task{
+		Action:   params["action"],
+		Schedule: params["schedule"],
+		Message:  params["message"],
+	}
 	err := task.Validate()
 	if err != nil {
 		return task, err
@@ -78,6 +82,11 @@ func (repo TaskRepository) UpdateTask(id int, params map[string]string) (Task, e
 	_, present = params["action"]
 	if present {
 		taskForUpdate.Action = params["action"]
+	}
+	present = false
+	_, present = params["message"]
+	if present {
+		taskForUpdate.Message = params["message"]
 	}
 	err := repo.db.Update(&taskForUpdate)
 	if err != nil {

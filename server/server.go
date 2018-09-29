@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/pustserg/scheduler/tasks"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"strconv"
@@ -54,7 +55,14 @@ func NewServer(env string, repo *tasks.TaskRepository) *Server {
 
 // Start starts server
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServe(":8000", server.router))
+	c := cors.New(
+		cors.Options{
+			Debug:          true,
+			AllowedMethods: []string{"GET", "POST", "DELETE", "PATCH"},
+		},
+	)
+	handler := c.Handler(server.router)
+	log.Fatal(http.ListenAndServe(":8000", handler))
 }
 
 // GetTasks index for tasks
