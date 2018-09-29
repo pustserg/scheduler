@@ -16,10 +16,11 @@ var (
 
 // Task is a struct with action and schedule
 type Task struct {
-	ID        int       `storm:"id,increment" json:"id"`
-	Action    string    `json:"action"`
-	Schedule  string    `json:"schedule"`
-	PerformAt time.Time `storm:"index" json:"perform_at"`
+	ID        int `storm:"id,increment"`
+	Action    string
+	Schedule  string
+	Message   string
+	PerformAt time.Time `storm:"index"`
 }
 
 // Processable is an interface.

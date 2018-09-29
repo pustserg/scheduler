@@ -10,7 +10,11 @@ func TestAddTask(t *testing.T) {
 	defer os.Remove("test.db")
 
 	// test success
-	task := map[string]string{"action": AvailableActions[0], "schedule": "*/2 * * * *"}
+	task := map[string]string{
+		"action":   AvailableActions[0],
+		"schedule": "*/2 * * * *",
+		"message":  "task message",
+	}
 	createdTask, err := repo.AddTask(task)
 
 	if err != nil {
@@ -22,9 +26,16 @@ func TestAddTask(t *testing.T) {
 	if createdTask.Schedule != task["schedule"] {
 		t.Error("Add task created task with wrong Schedule")
 	}
+	if createdTask.Message != task["message"] {
+		t.Error("Add task created task with wrong Message")
+	}
 
 	// test validation for invalid actions
-	invalidTask := map[string]string{"action": "invalid action", "schedule": "* * * * * *"}
+	invalidTask := map[string]string{
+		"action":   "invalid action",
+		"schedule": "* * * * * *",
+		"message":  "message",
+	}
 	_, elseErr := repo.AddTask(invalidTask)
 
 	if elseErr == nil {
@@ -35,7 +46,11 @@ func TestAddTask(t *testing.T) {
 	}
 
 	// test validation for empty action
-	taskWithEmptyAction := map[string]string{"action": "", "schedule": "* * * * * *"}
+	taskWithEmptyAction := map[string]string{
+		"action":   "",
+		"schedule": "* * * * * *",
+		"message":  "message",
+	}
 	_, elseOneErr := repo.AddTask(taskWithEmptyAction)
 
 	if elseOneErr == nil {
@@ -50,8 +65,20 @@ func TestGetAllTasks(t *testing.T) {
 	repo := NewRepository("test.db")
 	defer os.Remove("test.db")
 
-	createdTask1, _ := repo.AddTask(map[string]string{"action": AvailableActions[0], "schedule": "*/2 * * * *"})
-	createdTask2, _ := repo.AddTask(map[string]string{"action": AvailableActions[0], "schedule": "*/3 * * * *"})
+	createdTask1, _ := repo.AddTask(
+		map[string]string{
+			"action":   AvailableActions[0],
+			"schedule": "*/2 * * * *",
+			"message":  "message",
+		},
+	)
+	createdTask2, _ := repo.AddTask(
+		map[string]string{
+			"action":   AvailableActions[0],
+			"schedule": "*/3 * * * *",
+			"message":  "message",
+		},
+	)
 
 	repoTasks, err := repo.GetAllTasks()
 	if err != nil {
@@ -88,7 +115,13 @@ func TestGetAllTasks(t *testing.T) {
 func TestGetTask(t *testing.T) {
 	repo := NewRepository("test.db")
 	defer os.Remove("test.db")
-	task, _ := repo.AddTask(map[string]string{"action": AvailableActions[0], "schedule": "*/2 * * * *"})
+	task, _ := repo.AddTask(
+		map[string]string{
+			"action":   AvailableActions[0],
+			"schedule": "*/2 * * * *",
+			"message":  "message",
+		},
+	)
 
 	gotTask, err := repo.GetTask(task.ID)
 	if err != nil {
@@ -107,7 +140,13 @@ func TestGetTask(t *testing.T) {
 func TestUpdateTask(t *testing.T) {
 	repo := NewRepository("test.db")
 	defer os.Remove("test.db")
-	oldTask, _ := repo.AddTask(map[string]string{"action": AvailableActions[0], "schedule": "*/2 * * * *"})
+	oldTask, _ := repo.AddTask(
+		map[string]string{
+			"action":   AvailableActions[0],
+			"schedule": "*/2 * * * *",
+			"message":  "message",
+		},
+	)
 
 	newTaskParams := map[string]string{"schedule": "*/3 * * * * * *"}
 	updatedTask, err := repo.UpdateTask(oldTask.ID, newTaskParams)
@@ -123,12 +162,30 @@ func TestUpdateTask(t *testing.T) {
 	if updatedTask.Action != oldTask.Action {
 		t.Error("updated field which not present in params")
 	}
+
+	messageTaskParams := map[string]string{"message": "updated message"}
+	messageUpdatedTask, err := repo.UpdateTask(oldTask.ID, messageTaskParams)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if messageUpdatedTask.Message != messageTaskParams["message"] {
+		t.Error("message is not updated")
+	}
+
 }
 
 func TestDeleteTask(t *testing.T) {
 	repo := NewRepository("test.db")
 	defer os.Remove("test.db")
-	oldTask, _ := repo.AddTask(map[string]string{"action": AvailableActions[0], "schedule": "*/2 * * * *"})
+	oldTask, _ := repo.AddTask(
+		map[string]string{
+			"action":   AvailableActions[0],
+			"schedule": "*/2 * * * *",
+			"message":  "message",
+		},
+	)
 	allTasksBeforeDelete, _ := repo.GetAllTasks()
 	if len(allTasksBeforeDelete) != 1 {
 		t.Error("Cannot create before tasks")

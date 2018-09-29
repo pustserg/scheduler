@@ -8,6 +8,7 @@ type apiIndexTaskItem struct {
 	ID        int    `json:"id"`
 	Action    string `json:"action"`
 	Schedule  string `json:"schedule"`
+	Message   string `json:"message"`
 	PerformAt int    `json:"perform_at"`
 }
 
@@ -16,6 +17,7 @@ func apiIndexTask(task tasks.Task) apiIndexTaskItem {
 		ID:        task.ID,
 		Action:    task.Action,
 		Schedule:  task.Schedule,
+		Message:   task.Message,
 		PerformAt: int(task.PerformAt.Unix()),
 	}
 }
