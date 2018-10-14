@@ -18,8 +18,6 @@ func Handle(task *tasks.Task, cfg *appconfig.Config) {
 }
 
 func handleTelegramMessageTask(task *tasks.Task) {
-	err := tgbot.Send("Hello")
-	if err != nil {
-		panic(err)
-	}
+	bot := tgbot.Tgbot{}
+	bot.Send("Hello")
 }

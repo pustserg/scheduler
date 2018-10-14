@@ -1,3 +1,6 @@
 dbfile: ../tasks.db
 telegramapikey: aaa
 telegramchatid: 1
+telegramproxyurl: ""
+telegramproxyuser: ""
+telegramproxypassword: ""
