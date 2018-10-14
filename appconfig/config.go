@@ -8,7 +8,12 @@ import (
 
 // Config fof app
 type Config struct {
-	DbFile string
+	DbFile                string
+	TelegramAPIKey        string
+	TelegramChatID        int64
+	TelegramProxyURL      string
+	TelegramProxyUser     string
+	TelegramProxyPassword string
 }
 
 var cfgInstance *Config

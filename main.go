@@ -7,6 +7,7 @@ import (
 	"github.com/pustserg/scheduler/daemon"
 	"github.com/pustserg/scheduler/server"
 	"github.com/pustserg/scheduler/tasks"
+	"github.com/pustserg/scheduler/tgbot"
 	"log"
 )
 
@@ -19,7 +20,9 @@ func main() {
 	log.Println("app started with app env", appenv)
 	repo := tasks.NewRepository(config.DbFile)
 	startDaemon(*daemonWorkers, repo)
-	startHttpServer(appenv, repo)
+	startHTTPServer(appenv, repo)
+	bot := startTgBot(appenv)
+	log.Println("bot status", bot.Status)
 
 	var input string
 	fmt.Scanln(&input)
@@ -28,12 +31,18 @@ func main() {
 func startDaemon(workersCount int, repo *tasks.TaskRepository) {
 	daemonInstance := daemon.Daemon{}
 	fmt.Println(daemonInstance.State)
-	// daemonInstance.Start(workersCount, repo)
+	daemonInstance.Start(workersCount, repo)
 }
 
-func startHttpServer(env string, repo *tasks.TaskRepository) {
+func startHTTPServer(env string, repo *tasks.TaskRepository) {
 	log.Println("start http server")
 	serverInstance := server.NewServer(env, repo)
 	log.Println("Http server started with status", serverInstance.Status)
 	go serverInstance.Start()
+}
+
+func startTgBot(appenv string) *tgbot.Tgbot {
+	bot := tgbot.Tgbot{}
+	bot.Init(appenv)
+	return &bot
 }
